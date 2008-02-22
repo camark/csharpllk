@@ -18,7 +18,7 @@ namespace llk
                 {-1,-1,-1,-1,-1},
                 {-1,-1, 2, 2,-1},
                 {-1,-1, 1, 1,-1},
-                {-1,-1,-1, 2,-1},
+                {-1,-1, 1, 2,-1},
                 {-1,-1, 1,-1,-1},
                 {-1,-1,-1,-1,-1}
             };
@@ -176,11 +176,21 @@ namespace llk
                 return CheckOneLine(pt1, pt2);
 
             //右侧检测
-            if (CheckOneLine(new Point(pt1.X, pt2.Y), pt1))
+            bool canHorz = true;
+            for(int i=pt2.X+1;i<pt1.X;i++)
+                if(map[i,pt2.Y]!=-1)
+                    canHorz=false;
+
+            if (canHorz && CheckOneLine(new Point(pt1.X, pt2.Y), pt1))
                 return true;
 
             //下方检测
-            if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
+            bool canVert = true;
+            for (int j = pt2.Y + 1; j < pt1.Y; j++)
+                if (map[pt2.Y, j] != -1)
+                    canVert = false;
+
+            if (canVert && CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
                 return true;
 
             return false;
@@ -193,12 +203,27 @@ namespace llk
                 return CheckOneLine(pt1, pt2);
 
             //右侧检测
-            if (CheckOneLine(new Point(pt2.Y, pt1.X), pt1))
-                return true;
+            bool canHorz = true;
+            for (int i = pt2.X + 1; i < pt1.X; i++)
+                if (map[i, pt2.Y] != -1)
+                    canHorz = false;
+            if (canHorz)
+            {
+                if (CheckOneLine(new Point(pt2.Y, pt1.X), pt1))
+                    return true;
+            }
 
             //上方检测
-            if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
-                return true;
+            bool canVert = true;
+            for(int j=pt2.Y-1;j>pt1.Y;j--)
+                if(map[pt2.X,j]!=-1)
+                    canVert=false;
+
+            if (canVert)
+            {
+                if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
+                    return true;
+            }
 
             return false;
 
@@ -212,12 +237,27 @@ namespace llk
             //右侧检测
             bool canHorz = true;
 
-            if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
-                return true;
+            for (int i = pt1.X + 1; i < pt2.X; i++)
+                if (map[i, pt1.Y] != -1)
+                    canHorz = false;
+
+            if (canHorz)
+            {
+                if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
+                    return true;
+            }
 
             //上方检测
-            if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
-                return true;
+            bool canVert = false;
+            for (int j = pt1.Y - 1; j > pt2.Y; j--)
+                if (map[pt1.X, j] != -1)
+                    canVert = false;
+
+            if (canVert)
+            {
+                if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
+                    return true;
+            }
 
             return false;
         }
@@ -327,7 +367,7 @@ namespace llk
             string msgOK = "直接联通！";
             string msgOK_1 = "单角联通！";
             string msgOK_2 = "双角联通！";
-            Point pt1 = new Point(1, 2);
+            Point pt1 = new Point(1, 3);
             Point pt2 = new Point(3, 3);
             if (CheckOneLine(pt1, pt2))
                 MessageBox.Show(msgOK);
