@@ -1,0 +1,16 @@
+bin\Release\llk.exe
+bin\Release\llk.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\llk.Form1.resources
+obj\Release\llk.Properties.Resources.resources
+obj\Release\llk.csproj.GenerateResource.Cache
+obj\Release\llk.exe
+obj\Release\llk.pdb
+bin\Debug\llk.exe
+bin\Debug\llk.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\llk.Form1.resources
+obj\Debug\llk.Properties.Resources.resources
+obj\Debug\llk.csproj.GenerateResource.Cache
+obj\Debug\llk.exe
+obj\Debug\llk.pdb
