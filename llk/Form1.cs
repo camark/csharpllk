@@ -173,101 +173,19 @@ namespace llk
         }
 
         private bool CheckRightBottom(Point pt1, Point pt2)
-        {
-            ////throw new Exception("The method or operation is not implemented.");
-            //if (IsSameLine(pt1, pt2))
-            //    return CheckOneLine(pt1, pt2);
-
-            ////”“≤‡ºÏ≤‚
-            //bool canHorz = true;
-            //for(int i=pt2.X+1;i<pt1.X;i++)
-            //    if(map[pt1.Y,i]!=-1)
-            //        canHorz=false;
-
-            //if (canHorz && CheckOneLine(new Point(pt1.X, pt2.Y), pt1))
-            //    return true;
-
-            ////œ¬∑ΩºÏ≤‚
-            //bool canVert = true;
-            //for (int j = pt2.Y + 1; j < pt1.Y; j++)
-            //    if (map[j,pt2.X] != -1)
-            //        canVert = false;
-
-            //if (canVert && CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
-            //    return true;
-
-            //return false;
-
+        {           
             return CheckLeftTop(pt2, pt1);
 
         }
 
         private bool CheckRightTop(Point pt1, Point pt2)
-        {
-            //if (IsSameLine(pt1, pt2))
-            //    return CheckOneLine(pt1, pt2);
-
-            ////”“≤‡ºÏ≤‚
-            //bool canHorz = true;
-            //for (int i = pt2.X + 1; i < pt1.X; i++)
-            //    if (map[i, pt2.Y] != -1)
-            //        canHorz = false;
-            //if (canHorz)
-            //{
-            //    if (CheckOneLine(new Point(pt2.Y, pt1.X), pt1))
-            //        return true;
-            //}
-
-            ////…œ∑ΩºÏ≤‚
-            //bool canVert = true;
-            //for(int j=pt2.Y-1;j>pt1.Y;j--)
-            //    if(map[pt2.X,j]!=-1)
-            //        canVert=false;
-
-            //if (canVert)
-            //{
-            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
-            //        return true;
-            //}
-
-            //return false;
-
+        {          
             return CheckLeftBottom(pt2, pt1);
 
         }
 
         private bool CheckLeftBottom(Point pt1, Point pt2)
-        {
-            //if (IsSameLine(pt1, pt2))
-            //    return CheckOneLine(pt1, pt2);
-
-            ////”“≤‡ºÏ≤‚
-            //bool canHorz = true;
-
-            //for (int i = pt1.X + 1; i < pt2.X; i++)
-            //    if (map[i, pt1.Y] != -1)
-            //        canHorz = false;
-
-            //if (canHorz)
-            //{
-            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
-            //        return true;
-            //}
-
-            ////…œ∑ΩºÏ≤‚
-            //bool canVert = false;
-            //for (int j = pt1.Y - 1; j > pt2.Y; j--)
-            //    if (map[pt1.X, j] != -1)
-            //        canVert = false;
-
-            //if (canVert)
-            //{
-            //    if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
-            //        return true;
-            //}
-
-            //return false;
-
+        {           
             Point pt1_temp = new Point(pt2.X,pt1.Y);
             Point pt2_temp = new Point(pt1.X,pt2.Y);
 
@@ -296,42 +214,7 @@ namespace llk
         /// <param name="pt2">”“œ¬∑Ωµ„</param>
         /// <returns></returns>
         private bool CheckLeftTop(Point pt1, Point pt2)
-        {
-
-            //if (IsSameLine(pt1, pt2))
-            //    return CheckOneLine(pt1, pt2);
-
-            ////œÚ”“≤‡ºÏ≤‚
-            ////Point pt_temp = new Point();
-            
-            //bool canHorz=true;
-            //for (int i = pt1.X + 1; i <= pt2.X; i++)
-            //    if (map[i,pt1.Y] != -1)
-            //    {
-            //        canHorz = false;
-            //        break;
-            //    }
-            //if (canHorz)
-            //{
-            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
-            //        return true;
-            //}
-
-            ////œÚœ¬∑ΩºÏ≤‚
-            //bool canVert = true;
-            //for (int j = pt1.Y + 1; j <= pt2.Y; j++)
-            //    if (map[j,pt1.X] != -1)
-            //    {
-            //        canVert = false;
-            //        break;
-            //    }
-
-            //if(canVert)
-            //    if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
-            //        return true;
-
-            //return false;
-
+        {           
             Point pt1_temp = new Point(pt1.X, pt2.Y);
             Point pt2_temp = new Point(pt2.X, pt1.Y);
 
