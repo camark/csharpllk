@@ -10,8 +10,10 @@ namespace llk
 {
     public partial class Form1 : Form
     {
-        private int hozCount = 5;
-        private int VerCount = 6;
+        private int hozCount = 20;
+        private int VerCount = 12;
+        private int tileWidth = 31;
+        private int tileHeight = 34;
 
         private int[,] map =
             {
@@ -22,6 +24,102 @@ namespace llk
                 {-1,-1, 1,-1,-1},
                 {-1,-1,-1,-1,-1}
             };
+
+        private MapTitle[,] MapTiles = null;
+        private int[] MapArray = null;
+
+        private void RandomMapArray()
+        {
+            int count= (hozCount-2) * (VerCount-2);
+            MapArray=new int[count];
+
+            for (int i = 0; i < count; i++)
+                MapArray[i] = i + 1;
+
+            Random rnd = new Random((int)System.DateTime.Now.Millisecond);
+            for (int i = count; i > 0; i--)
+            {
+                int j = rnd.Next(i);
+                int temp = MapArray[j];
+                MapArray[j] = MapArray[i - 1];
+                MapArray[i - 1] = temp;
+            }
+        }
+
+        private void InitTiles()
+        {
+            MapTiles = new MapTitle[VerCount, hozCount];
+
+            //预留边界
+            for (int i = 0; i < hozCount; i++)
+            {
+                MapTiles[0,i] = new MapTitle(0,i, -1);
+                MapTiles[VerCount-1,i] = new MapTitle(VerCount-1,i, -1);
+            }
+            for (int j = 0; j < VerCount; j++)
+            {
+                MapTiles[j, 0] = new MapTitle(j, 0, -1);
+                MapTiles[j, hozCount - 1] = new MapTitle(j, hozCount - 1, -1);
+            }
+
+            //初始化内部数据
+
+            for (int i = 1; i < VerCount-1; i++)
+                for (int j = 1; j < hozCount-1; j++)
+                    MapTiles[i, j] = new MapTitle(i, j, MapArray[(i - 1) * (hozCount-2) + (j - 1)], OffsetX + (i - 1) * tileWidth, OffsetY + (j - 1) * tileHeight);
+
+            ShowData();
+        }
+
+        private void ShowData()
+        {
+            if (listView1.Columns.Count == 0)
+            {
+                for (int i = 0; i < hozCount; i++)
+                {
+                    ColumnHeader _header = new ColumnHeader();
+                    _header.Text = i.ToString();
+                    _header.Width = 40;
+
+                    listView1.Columns.Add(_header);
+                }
+            }
+
+            listView1.Items.Clear();
+
+            for (int i = 0; i < VerCount; i++)
+            {
+                ListViewItem item = new ListViewItem();
+                int k=0;
+                item.Text = MapTiles[i, k].ImageID.ToString();
+                for (int j = 1; j < hozCount; j++)
+                    item.SubItems.Add((MapTiles[i, j].ImageID%36+1).ToString());
+
+                listView1.Items.Add(item);
+            }
+        }
+        private void InitGameData()
+        {
+            RandomMapArray();
+            InitTiles();
+        }
+        private int _offsetX;
+
+        public int OffsetX
+        {
+            get { return _offsetX; }
+            set { _offsetX = value; }
+        }
+
+        private int _offsetY;
+
+        public int OffsetY
+        {
+            get { return _offsetY; }
+            set { _offsetY = value; }
+        }
+
+
         public Form1()
         {
             InitializeComponent();
@@ -289,7 +387,7 @@ namespace llk
             string msgOK_1 = "单角联通！";
             string msgOK_2 = "双角联通！";
             Point pt1 = new Point(3, 1);
-            Point pt2 = new Point(1, 3);
+            Point pt2 = new Point(1, 2);
             if (CheckOneLine(pt1, pt2))
                 MessageBox.Show(msgOK);
             else
@@ -300,6 +398,14 @@ namespace llk
                         MessageBox.Show(msgOK_2);
                     else
                         MessageBox.Show("不能联通");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            InitGameData();
+
+            foreach(int j in MapArray)
+                listBox1.Items.Add(j);
         }
     }
 }
