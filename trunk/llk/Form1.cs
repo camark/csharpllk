@@ -17,7 +17,7 @@ namespace llk
             {
                 {-1,-1,-1,-1,-1},
                 {-1,-1, 2, 2,-1},
-                {-1,-1, 1, 1,-1},
+                {-1, 1, 1, 1,-1},
                 {-1, 2, 1, 2,-1},
                 {-1,-1, 1,-1,-1},
                 {-1,-1,-1,-1,-1}
@@ -136,8 +136,6 @@ namespace llk
                 else
                     return 4;
             }
-
-            return 0;
         }
         /// <summary>
         /// 版本1、只查询pt1在pt2的左上方的情况
@@ -290,8 +288,8 @@ namespace llk
             string msgOK = "直接联通！";
             string msgOK_1 = "单角联通！";
             string msgOK_2 = "双角联通！";
-            Point pt1 = new Point(1, 2);
-            Point pt2 = new Point(3, 1);
+            Point pt1 = new Point(3, 1);
+            Point pt2 = new Point(1, 3);
             if (CheckOneLine(pt1, pt2))
                 MessageBox.Show(msgOK);
             else
