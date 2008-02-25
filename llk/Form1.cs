@@ -18,7 +18,7 @@ namespace llk
                 {-1,-1,-1,-1,-1},
                 {-1,-1, 2, 2,-1},
                 {-1,-1, 1, 1,-1},
-                {-1,-1, 1, 2,-1},
+                {-1, 2, 1, 2,-1},
                 {-1,-1, 1,-1,-1},
                 {-1,-1,-1,-1,-1}
             };
@@ -52,7 +52,7 @@ namespace llk
                     p1_temp.X = pt1.X;
                     p1_temp.Y = pt1.Y > pt2.Y ? pt1.Y : pt2.Y;
 
-                    p2_temp.X = pt1.Y;
+                    p2_temp.X = pt1.X;
                     p2_temp.Y = pt1.Y > pt2.Y ? pt2.Y : pt1.Y;
                 }
         }
@@ -85,6 +85,8 @@ namespace llk
                     for (int i = p2_temp.X + 1; i < p1_temp.X; i++)
                         if (map[i, p1_temp.Y] != -1)
                             return false;
+
+                    return true; 
                 }
                 else
                 {
@@ -97,22 +99,23 @@ namespace llk
 
                     //如果中间相隔几个
                     for (int i = p2_temp.Y + 1; i < p1_temp.Y; i++)
+                    {
                         if (map[p2_temp.X, i] != -1)
                             return false;
+                    }
+
+                    return true;
                 }
             }
             else
                 return false;
-
-            return true;
-
         }
 
 
         //查看是否超出数组边界
         private bool isPointOutBorder(Point pt)
         {
-            return pt.X == -1 || pt.Y == -1 || pt.X == hozCount || pt.Y == VerCount;
+            return pt.X == -1 || pt.Y == -1 || pt.X == VerCount || pt.Y == hozCount;
         }
 
 
@@ -171,95 +174,119 @@ namespace llk
 
         private bool CheckRightBottom(Point pt1, Point pt2)
         {
-            //throw new Exception("The method or operation is not implemented.");
-            if (IsSameLine(pt1, pt2))
-                return CheckOneLine(pt1, pt2);
+            ////throw new Exception("The method or operation is not implemented.");
+            //if (IsSameLine(pt1, pt2))
+            //    return CheckOneLine(pt1, pt2);
 
-            //右侧检测
-            bool canHorz = true;
-            for(int i=pt2.X+1;i<pt1.X;i++)
-                if(map[i,pt2.Y]!=-1)
-                    canHorz=false;
+            ////右侧检测
+            //bool canHorz = true;
+            //for(int i=pt2.X+1;i<pt1.X;i++)
+            //    if(map[pt1.Y,i]!=-1)
+            //        canHorz=false;
 
-            if (canHorz && CheckOneLine(new Point(pt1.X, pt2.Y), pt1))
-                return true;
+            //if (canHorz && CheckOneLine(new Point(pt1.X, pt2.Y), pt1))
+            //    return true;
 
-            //下方检测
-            bool canVert = true;
-            for (int j = pt2.Y + 1; j < pt1.Y; j++)
-                if (map[pt2.Y, j] != -1)
-                    canVert = false;
+            ////下方检测
+            //bool canVert = true;
+            //for (int j = pt2.Y + 1; j < pt1.Y; j++)
+            //    if (map[j,pt2.X] != -1)
+            //        canVert = false;
 
-            if (canVert && CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
-                return true;
+            //if (canVert && CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
+            //    return true;
 
-            return false;
+            //return false;
+
+            return CheckLeftTop(pt2, pt1);
 
         }
 
         private bool CheckRightTop(Point pt1, Point pt2)
         {
-            if (IsSameLine(pt1, pt2))
-                return CheckOneLine(pt1, pt2);
+            //if (IsSameLine(pt1, pt2))
+            //    return CheckOneLine(pt1, pt2);
 
-            //右侧检测
-            bool canHorz = true;
-            for (int i = pt2.X + 1; i < pt1.X; i++)
-                if (map[i, pt2.Y] != -1)
-                    canHorz = false;
-            if (canHorz)
-            {
-                if (CheckOneLine(new Point(pt2.Y, pt1.X), pt1))
-                    return true;
-            }
+            ////右侧检测
+            //bool canHorz = true;
+            //for (int i = pt2.X + 1; i < pt1.X; i++)
+            //    if (map[i, pt2.Y] != -1)
+            //        canHorz = false;
+            //if (canHorz)
+            //{
+            //    if (CheckOneLine(new Point(pt2.Y, pt1.X), pt1))
+            //        return true;
+            //}
 
-            //上方检测
-            bool canVert = true;
-            for(int j=pt2.Y-1;j>pt1.Y;j--)
-                if(map[pt2.X,j]!=-1)
-                    canVert=false;
+            ////上方检测
+            //bool canVert = true;
+            //for(int j=pt2.Y-1;j>pt1.Y;j--)
+            //    if(map[pt2.X,j]!=-1)
+            //        canVert=false;
 
-            if (canVert)
-            {
-                if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
-                    return true;
-            }
+            //if (canVert)
+            //{
+            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt1))
+            //        return true;
+            //}
 
-            return false;
+            //return false;
+
+            return CheckLeftBottom(pt2, pt1);
 
         }
 
         private bool CheckLeftBottom(Point pt1, Point pt2)
         {
-            if (IsSameLine(pt1, pt2))
-                return CheckOneLine(pt1, pt2);
+            //if (IsSameLine(pt1, pt2))
+            //    return CheckOneLine(pt1, pt2);
 
-            //右侧检测
-            bool canHorz = true;
+            ////右侧检测
+            //bool canHorz = true;
 
-            for (int i = pt1.X + 1; i < pt2.X; i++)
-                if (map[i, pt1.Y] != -1)
-                    canHorz = false;
+            //for (int i = pt1.X + 1; i < pt2.X; i++)
+            //    if (map[i, pt1.Y] != -1)
+            //        canHorz = false;
 
-            if (canHorz)
-            {
-                if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
-                    return true;
-            }
+            //if (canHorz)
+            //{
+            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
+            //        return true;
+            //}
 
-            //上方检测
-            bool canVert = false;
-            for (int j = pt1.Y - 1; j > pt2.Y; j--)
-                if (map[pt1.X, j] != -1)
-                    canVert = false;
+            ////上方检测
+            //bool canVert = false;
+            //for (int j = pt1.Y - 1; j > pt2.Y; j--)
+            //    if (map[pt1.X, j] != -1)
+            //        canVert = false;
 
-            if (canVert)
-            {
-                if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
-                    return true;
-            }
+            //if (canVert)
+            //{
+            //    if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
+            //        return true;
+            //}
 
-            return false;
+            //return false;
+
+            Point pt1_temp = new Point(pt2.X,pt1.Y);
+            Point pt2_temp = new Point(pt1.X,pt2.Y);
+
+            if ((CheckOneLine(pt1_temp, pt1)
+                &&
+                map[pt1_temp.X, pt1_temp.Y] == -1 
+                && CheckOneLine(pt1_temp,pt2)
+                )
+                || 
+                (CheckOneLine(pt2, pt2_temp)
+                &&
+                map[pt2_temp.X, pt2_temp.Y] == -1 
+                && 
+                CheckOneLine(pt2_temp,pt1)
+                )
+                )
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -271,40 +298,47 @@ namespace llk
         private bool CheckLeftTop(Point pt1, Point pt2)
         {
 
-            if (IsSameLine(pt1, pt2))
-                return CheckOneLine(pt1, pt2);
+            //if (IsSameLine(pt1, pt2))
+            //    return CheckOneLine(pt1, pt2);
 
-            //向右侧检测
-            //Point pt_temp = new Point();
+            ////向右侧检测
+            ////Point pt_temp = new Point();
             
-            bool canHorz=true;
-            for (int i = pt1.X + 1; i < pt2.X; i++)
-                if (map[i, pt1.Y] != -1)
-                {
-                    canHorz = false;
-                    break;
-                }
-            if (canHorz)
-            {
-                if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
-                    return true;
-            }
+            //bool canHorz=true;
+            //for (int i = pt1.X + 1; i <= pt2.X; i++)
+            //    if (map[i,pt1.Y] != -1)
+            //    {
+            //        canHorz = false;
+            //        break;
+            //    }
+            //if (canHorz)
+            //{
+            //    if (CheckOneLine(new Point(pt2.X, pt1.Y), pt2))
+            //        return true;
+            //}
 
-            //向下方检测
-            bool canVert = true;
-            for (int j = pt1.Y + 1; j < pt2.Y; j++)
-                if (map[pt1.X, j] == -1)
-                {
-                    canVert = false;
-                    break;
-                }
+            ////向下方检测
+            //bool canVert = true;
+            //for (int j = pt1.Y + 1; j <= pt2.Y; j++)
+            //    if (map[j,pt1.X] != -1)
+            //    {
+            //        canVert = false;
+            //        break;
+            //    }
 
-            if(canVert)
-                if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
-                    return true;
+            //if(canVert)
+            //    if (CheckOneLine(new Point(pt1.X, pt2.Y), pt2))
+            //        return true;
 
-            return false;
+            //return false;
 
+            Point pt1_temp = new Point(pt1.X, pt2.Y);
+            Point pt2_temp = new Point(pt2.X, pt1.Y);
+
+            if ((CheckOneLine(pt1, pt1_temp) && map[pt1_temp.X, pt1_temp.Y] == -1 && CheckOneLine(pt1_temp,pt2) ) || (CheckOneLine(pt2_temp, pt2) && map[pt2_temp.X, pt2_temp.Y] == -1 && CheckOneLine(pt1,pt2_temp)))
+                return true;
+            else
+                return false;
         }
 
         private bool CheckTwoCorner(Point pt1, Point pt2)
@@ -351,12 +385,18 @@ namespace llk
             pt_temp.X = pt1.X;
             pt_temp.Y = pt1.Y + 1;
 
+
+            if (isPointOutBorder(pt_temp))
+                return false;
             while (!isPointOutBorder(pt_temp) && map[pt_temp.X, pt_temp.Y] == -1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
                     return true;
 
                 pt_temp.Y += 1;
+
+                if (isPointOutBorder(pt_temp))
+                    return false;
             }
 
             return false;
@@ -367,8 +407,8 @@ namespace llk
             string msgOK = "直接联通！";
             string msgOK_1 = "单角联通！";
             string msgOK_2 = "双角联通！";
-            Point pt1 = new Point(1, 3);
-            Point pt2 = new Point(3, 3);
+            Point pt1 = new Point(1, 2);
+            Point pt2 = new Point(3, 1);
             if (CheckOneLine(pt1, pt2))
                 MessageBox.Show(msgOK);
             else
