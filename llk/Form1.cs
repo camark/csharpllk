@@ -103,7 +103,7 @@ namespace llk
             RandomMapArray();
             InitTiles();
         }
-        private int _offsetX;
+        private int _offsetX=0;
 
         public int OffsetX
         {
@@ -111,7 +111,7 @@ namespace llk
             set { _offsetX = value; }
         }
 
-        private int _offsetY;
+        private int _offsetY=0;
 
         public int OffsetY
         {
