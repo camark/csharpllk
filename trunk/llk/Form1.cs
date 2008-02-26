@@ -49,6 +49,7 @@ namespace llk
             }
         }
 
+
         private void InitTiles()
         {
             MapTiles = new MapTitle[VerCount, hozCount];
@@ -127,7 +128,18 @@ namespace llk
 
             Graphics g = Graphics.FromHwnd(panel1.Handle);
 
-            g.FillRectangle(new SolidBrush(Color.Red), rect);
+            g.FillRectangle(new SolidBrush(Color.Black), rect);
+        }
+
+        private void DrawTile(MapTitle tile)
+        {
+            int imageId = tile.ImageID;
+            string fileName = Application.StartupPath + @"/Image/" + imageId.ToString() + ".bmp";
+            Bitmap bmp = new Bitmap(fileName);
+
+            Graphics g = Graphics.FromHwnd(panel1.Handle);
+
+            g.DrawImage(bmp, tile.OffsetX, tile.OffsetY);
         }
 
         private void InitGameData()
@@ -426,23 +438,47 @@ namespace llk
 
             return false;
         }
+
+        private void AutoLink()
+        {
+            if (CalcSolution() == 2)
+                return;
+
+            for (int i = 1; i < VerCount - 1; i++)
+                for (int j = 1; j < hozCount - 1; j++)
+                    if (MapTiles[i, j].ImageID != -1)
+                    {
+                        //tileNum++;
+                        for (int k = i; k < VerCount - 1; k++)
+                            for (int l = 1; l < hozCount - 1; l++)
+                            {
+                                if (k == i && j == l) continue;
+
+                                if (isSameTile(MapTiles[i, j], MapTiles[k, l]))
+                                {
+                                    if (MapTiles[k, l].ImageID != -1)
+                                    {
+                                        if (CanLink(MapTiles[i, j], MapTiles[k, l]))
+                                        {
+                                            HideTile(MapTiles[i, j]);
+                                            HideTile(MapTiles[k, j]);
+
+                                            MapTiles[i, j].ImageID = -1;
+                                            MapTiles[k, l].ImageID = -1;
+                                            if (CalcSolution() == 1)
+                                            {
+                                                AgainShuffleGame();
+                                                AutoLink();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }    
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-            string msgOK = "直接联通！";
-            string msgOK_1 = "单角联通！";
-            string msgOK_2 = "双角联通！";
-            Point pt1 = new Point(3, 1);
-            Point pt2 = new Point(1, 2);
-            if (CheckOneLine(pt1, pt2))
-                MessageBox.Show(msgOK);
-            else
-                if (CheckOneCorner(pt1, pt2))
-                    MessageBox.Show(msgOK_1);
-                else
-                    if (CheckTwoCorner(pt1, pt2))
-                        MessageBox.Show(msgOK_2);
-                    else
-                        MessageBox.Show("不能联通");
+            AutoLink();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -466,7 +502,15 @@ namespace llk
             int x = (pt.X - OffsetY) / tileWidth+1;
             int y = (pt.Y - OffsetX) / tileHeight+1;
 
+            
+
             Point SelPoint = new Point(y, x);
+
+            if (isPointOutBorder(SelPoint))
+            {
+                return;
+            }
+
             if (_selTile == null)
             {
                 _selTile = MapTiles[y, x];
@@ -479,6 +523,7 @@ namespace llk
                 label2.Text = "Selected Tile 2:" + y.ToString() + "," + x.ToString()+":"+tile.ImageID.ToString();
                 if (isSameTile(_selTile, tile))
                 {
+                    //如果可以连接
                     if (CanLink(new Point(_selTile.X, _selTile.Y), new Point(tile.X, tile.Y)))
                     {
                         HideTile(_selTile);
@@ -488,6 +533,17 @@ namespace llk
                         MapTiles[tile.X, tile.Y].ImageID = -1;
 
                         ShowData();
+                        int i=CalcSolution();
+                        if (i == 2)
+                        {
+                            MessageBox.Show("Congruation! You do greate job!");
+                            _GameStart = false;
+                        }
+
+                        if (i == 1)
+                        {
+                            AgainShuffleGame();
+                        }
                         _selTile = null;
                     }
                     else
@@ -501,6 +557,12 @@ namespace llk
         }
 
 
+        /// <summary>
+        /// 查看是否是一个图形
+        /// </summary>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
+        /// <returns></returns>
         private bool isSameTile(MapTitle t1, MapTitle t2)
         {
             return t1.ImageID == t2.ImageID && !(t1.X == t2.X && t2.Y == t1.Y);
@@ -528,6 +590,131 @@ namespace llk
                         }
                     }
             }
+        }
+
+        private bool CanLink(MapTitle t1, MapTitle t2)
+        {
+            return CanLink(new Point(t1.X, t1.Y), new Point(t2.X, t2.Y));
+        }
+        /// <summary>
+        /// test if the current game situation have solution.
+        /// return value:
+        ///   0: yes,have solution.
+        ///   1: no,need to shuffle the cards.
+        ///   2: the cards are all deleted,this level is clear.
+        /// </summary>
+        /// <returns></returns>
+        private int CalcSolution()
+        {
+            int tileNum=0;
+            for(int i=1;i<VerCount-1;i++)
+                for(int j=1;j<hozCount-1;j++)
+                    if (MapTiles[i, j].ImageID != -1)
+                    {
+                        tileNum++;
+                        for (int k = i; k < VerCount - 1; k++)
+                            for (int l = 1; l < hozCount - 1; l++)
+                            {
+                                if (k == i && j == l) continue;
+
+                                if (isSameTile(MapTiles[i, j], MapTiles[k, l]))
+                                {
+                                    if (MapTiles[k, l].ImageID != -1)
+                                    {
+                                        if (CanLink(MapTiles[i, j], MapTiles[k, l]))
+                                            return 0;
+                                    }
+                                }
+                            }                                
+                    }
+
+            if (tileNum > 0)
+                return 1;
+
+            return 2;
+
+        }
+
+        private void RandomArray(int[] array)
+        {
+            int count = array.Length;
+            Random rnd = new Random((int)System.DateTime.Now.Millisecond);
+            for (int i = count; i > 0; i--)
+            {
+                int j = rnd.Next(i);
+                int temp = array[j];
+                array[j] = array[i - 1];
+                array[i - 1] = temp;
+            }
+        }
+
+        /// <summary>
+        /// 重新打乱数组，保证有解
+        /// </summary>
+        private void AgainShuffleGame()
+        {
+            List<int> a1 = new List<int>();
+
+            for (int i = 1; i < VerCount - 1; i++)
+                for (int j = 1; j < hozCount - 1; j++)
+                    if (MapTiles[i, j].ImageID != -1)
+                        a1.Add(MapTiles[i, j].ImageID);
+
+
+            int[] array_temp = a1.ToArray();
+
+            RandomArray(array_temp);
+
+            int m = 1;
+            for (int i = 1; i < VerCount - 1; i++)
+                for (int j = 1; j < hozCount - 1; j++)
+                {
+                    if (MapTiles[i, j].ImageID != -1)
+                    {
+                        MapTiles[i, j].ImageID = array_temp[m];
+                        m++;
+                    }
+                }
+
+            if (CalcSolution() == 1)
+                AgainShuffleGame();
+            else
+                if (CalcSolution() == 0)
+                    panel1.Invalidate();
+                        
+        }
+
+        private void CalcHinted(object sender, EventArgs e)
+        {
+            for (int i = 1; i < VerCount - 1; i++)
+                for (int j = 1; j < hozCount - 1; j++)
+                    if (MapTiles[i, j].ImageID != -1)
+                    {                        
+                        for (int k = i; k < VerCount - 1; k++)
+                            for (int l = 1; l < hozCount - 1; l++)
+                            {
+                                if (k == i && j == l) continue;
+
+                                if (MapTiles[k, l].ImageID != -1)
+                                {
+                                    if(isSameTile(MapTiles[i,j],MapTiles[k,l])){
+                                        if (CanLink(MapTiles[i, j], MapTiles[k, l]))
+                                        {
+                                            int delay = 30;
+                                            HideTile(MapTiles[i, j]);
+                                            System.Threading.Thread.Sleep(delay);
+                                            DrawTile(MapTiles[i, j]);
+
+                                            HideTile(MapTiles[k, l]);
+                                            System.Threading.Thread.Sleep(delay);
+                                            DrawTile(MapTiles[k, l]);
+                                            //MessageBox.Show(i.ToString() + "," + j.ToString() + "-" + k.ToString() + "," + l.ToString(), "提示");
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                    }
         }
     }
 }
