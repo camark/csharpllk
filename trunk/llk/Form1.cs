@@ -14,8 +14,11 @@ namespace llk
         private int VerCount = 12;
         private int tileWidth = 31;
         private int tileHeight = 34;
+        private bool _GameStart = false;
+        private MapTitle _selTile = null;
+        private int _imageCount=36;
 
-        private int[,] map =
+        private int[,] map1 =
             {
                 {-1,-1,-1,-1,-1},
                 {-1,-1, 2, 2,-1},
@@ -66,7 +69,7 @@ namespace llk
 
             for (int i = 1; i < VerCount-1; i++)
                 for (int j = 1; j < hozCount-1; j++)
-                    MapTiles[i, j] = new MapTitle(i, j, MapArray[(i - 1) * (hozCount-2) + (j - 1)], OffsetX + (i - 1) * tileWidth, OffsetY + (j - 1) * tileHeight);
+                    MapTiles[i, j] = new MapTitle(i, j, MapArray[(i - 1) * (hozCount - 2) + (j - 1)] % _imageCount+1, OffsetY + (j - 1) * tileWidth,OffsetX + (i - 1) * tileHeight);
 
             ShowData();
         }
@@ -93,17 +96,46 @@ namespace llk
                 int k=0;
                 item.Text = MapTiles[i, k].ImageID.ToString();
                 for (int j = 1; j < hozCount; j++)
-                    item.SubItems.Add((MapTiles[i, j].ImageID%36+1).ToString());
+                    item.SubItems.Add((MapTiles[i, j].ImageID).ToString());
 
                 listView1.Items.Add(item);
             }
         }
+
+        private void DrawImage()
+        {
+            for(int i=1;i<VerCount-1;i++)
+                for (int j = 1; j < hozCount - 1; j++)
+                {
+                    MapTitle mt=MapTiles[i,j];
+                    if (mt.ImageID != -1)
+                    {
+                        int imageId = mt.ImageID ;
+                        string fileName = Application.StartupPath + @"/Image/" + imageId.ToString() + ".bmp";
+                        Bitmap bmp = new Bitmap(fileName);
+
+                        Graphics g = Graphics.FromHwnd(panel1.Handle);
+
+                        g.DrawImage(bmp, mt.OffsetX, mt.OffsetY);
+                    }
+                }
+        }
+
+        private void HideTile(MapTitle tile)
+        {
+            Rectangle rect = new Rectangle(tile.OffsetX, tile.OffsetY, tileWidth, tileHeight);
+
+            Graphics g = Graphics.FromHwnd(panel1.Handle);
+
+            g.FillRectangle(new SolidBrush(Color.Red), rect);
+        }
+
         private void InitGameData()
         {
             RandomMapArray();
             InitTiles();
         }
-        private int _offsetX=0;
+        private int _offsetX=20;
 
         public int OffsetX
         {
@@ -111,7 +143,7 @@ namespace llk
             set { _offsetX = value; }
         }
 
-        private int _offsetY=0;
+        private int _offsetY=40;
 
         public int OffsetY
         {
@@ -181,7 +213,7 @@ namespace llk
                         return true;
                     //如果中间相隔几个
                     for (int i = p2_temp.X + 1; i < p1_temp.X; i++)
-                        if (map[i, p1_temp.Y] != -1)
+                        if (MapTiles[i, p1_temp.Y].ImageID != -1)
                             return false;
 
                     return true; 
@@ -198,7 +230,7 @@ namespace llk
                     //如果中间相隔几个
                     for (int i = p2_temp.Y + 1; i < p1_temp.Y; i++)
                     {
-                        if (map[p2_temp.X, i] != -1)
+                        if (MapTiles[p2_temp.X, i].ImageID != -1)
                             return false;
                     }
 
@@ -287,13 +319,13 @@ namespace llk
 
             if ((CheckOneLine(pt1_temp, pt1)
                 &&
-                map[pt1_temp.X, pt1_temp.Y] == -1 
+                MapTiles[pt1_temp.X, pt1_temp.Y].ImageID == -1 
                 && CheckOneLine(pt1_temp,pt2)
                 )
                 || 
                 (CheckOneLine(pt2, pt2_temp)
                 &&
-                map[pt2_temp.X, pt2_temp.Y] == -1 
+                MapTiles[pt2_temp.X, pt2_temp.Y].ImageID == -1 
                 && 
                 CheckOneLine(pt2_temp,pt1)
                 )
@@ -314,7 +346,7 @@ namespace llk
             Point pt1_temp = new Point(pt1.X, pt2.Y);
             Point pt2_temp = new Point(pt2.X, pt1.Y);
 
-            if ((CheckOneLine(pt1, pt1_temp) && map[pt1_temp.X, pt1_temp.Y] == -1 && CheckOneLine(pt1_temp,pt2) ) || (CheckOneLine(pt2_temp, pt2) && map[pt2_temp.X, pt2_temp.Y] == -1 && CheckOneLine(pt1,pt2_temp)))
+            if ((CheckOneLine(pt1, pt1_temp) && MapTiles[pt1_temp.X, pt1_temp.Y].ImageID == -1 && CheckOneLine(pt1_temp,pt2) ) || (CheckOneLine(pt2_temp, pt2) && MapTiles[pt2_temp.X, pt2_temp.Y].ImageID == -1 && CheckOneLine(pt1,pt2_temp)))
                 return true;
             else
                 return false;
@@ -328,7 +360,7 @@ namespace llk
             pt_temp.X = pt1.X - 1;
             pt_temp.Y = pt1.Y;
 
-            while (!isPointOutBorder(pt_temp) && map[pt_temp.X,pt_temp.Y]==-1)
+            while (!isPointOutBorder(pt_temp) && MapTiles[pt_temp.X,pt_temp.Y].ImageID==-1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
                     return true;
@@ -340,7 +372,7 @@ namespace llk
             pt_temp.X = pt1.X + 1;
             pt_temp.Y = pt1.Y;
 
-            while (!isPointOutBorder(pt_temp) && map[pt_temp.X, pt_temp.Y] == -1)
+            while (!isPointOutBorder(pt_temp) && MapTiles[pt_temp.X, pt_temp.Y].ImageID == -1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
                     return true;
@@ -352,7 +384,7 @@ namespace llk
             pt_temp.X = pt1.X;
             pt_temp.Y = pt1.Y - 1;
 
-            while (!isPointOutBorder(pt_temp) && map[pt_temp.X, pt_temp.Y] == -1)
+            while (!isPointOutBorder(pt_temp) && MapTiles[pt_temp.X, pt_temp.Y].ImageID == -1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
                     return true;
@@ -367,7 +399,7 @@ namespace llk
 
             if (isPointOutBorder(pt_temp))
                 return false;
-            while (!isPointOutBorder(pt_temp) && map[pt_temp.X, pt_temp.Y] == -1)
+            while (!isPointOutBorder(pt_temp) && MapTiles[pt_temp.X, pt_temp.Y].ImageID == -1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
                     return true;
@@ -381,6 +413,19 @@ namespace llk
             return false;
         }
 
+        private bool CanLink(Point pt1, Point pt2)
+        {
+            if (CheckOneLine(pt1, pt2))
+                return true;
+            else
+                if (CheckOneCorner(pt1, pt2))
+                    return true;
+                else
+                    if (CheckTwoCorner(pt1, pt2))
+                        return true;
+
+            return false;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             string msgOK = "直接联通！";
@@ -402,10 +447,87 @@ namespace llk
 
         private void button2_Click(object sender, EventArgs e)
         {
+            _GameStart = true;
             InitGameData();
+            DrawImage();
 
             foreach(int j in MapArray)
                 listBox1.Items.Add(j);
+        }
+
+        private void panel1_MouseUp(object sender, MouseEventArgs e)
+        {
+            //MessageBox.Show(e.X.ToString() + "--" + e.Y.ToString());
+            if (!_GameStart)
+                return;
+
+            Point pt = new Point(e.X, e.Y);
+
+            int x = (pt.X - OffsetY) / tileWidth+1;
+            int y = (pt.Y - OffsetX) / tileHeight+1;
+
+            Point SelPoint = new Point(y, x);
+            if (_selTile == null)
+            {
+                _selTile = MapTiles[y, x];
+                label1.Text = "Selected Tile:" + y.ToString() + "," + x.ToString()+":"+_selTile.ImageID.ToString();
+                return ;
+            }
+            else
+            {
+                MapTitle tile = MapTiles[y, x];
+                label2.Text = "Selected Tile 2:" + y.ToString() + "," + x.ToString()+":"+tile.ImageID.ToString();
+                if (isSameTile(_selTile, tile))
+                {
+                    if (CanLink(new Point(_selTile.X, _selTile.Y), new Point(tile.X, tile.Y)))
+                    {
+                        HideTile(_selTile);
+                        HideTile(tile);
+
+                        MapTiles[_selTile.X, _selTile.Y].ImageID = -1;
+                        MapTiles[tile.X, tile.Y].ImageID = -1;
+
+                        ShowData();
+                        _selTile = null;
+                    }
+                    else
+                        _selTile = null;
+                }
+                else
+                {
+                    _selTile = null;
+                }
+            }
+        }
+
+
+        private bool isSameTile(MapTitle t1, MapTitle t2)
+        {
+            return t1.ImageID == t2.ImageID && !(t1.X == t2.X && t2.Y == t1.Y);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            if (_GameStart && MapTiles != null)
+            {
+                for (int i = 1; i < VerCount - 1; i++)
+                    for (int j = 1; j < hozCount - 1; j++)
+                    {
+                        MapTitle mt = MapTiles[i, j];
+                        if (mt.ImageID != -1)
+                        {
+                            int imageId = (mt.ImageID % _imageCount) + 1;
+                            string fileName = Application.StartupPath + @"/Image/" + imageId.ToString() + ".bmp";
+                            Bitmap bmp = new Bitmap(fileName);
+
+                            //Graphics g = Graphics.FromHwnd(panel1.Handle);
+
+                            g.DrawImage(bmp, mt.OffsetX, mt.OffsetY);
+                        }
+                    }
+            }
         }
     }
 }

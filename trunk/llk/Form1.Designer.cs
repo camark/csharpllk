@@ -33,58 +33,82 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(345, 49);
+            this.button1.Location = new System.Drawing.Point(299, 16);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "TestPath";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(345, 87);
+            this.button2.Location = new System.Drawing.Point(419, 16);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
+            this.button2.Text = "Start";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(30, 43);
+            this.listBox1.Location = new System.Drawing.Point(30, 16);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(246, 82);
+            this.listBox1.Size = new System.Drawing.Size(246, 56);
             this.listBox1.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlText;
-            this.panel1.Location = new System.Drawing.Point(30, 143);
+            this.panel1.Location = new System.Drawing.Point(30, 78);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(540, 154);
+            this.panel1.Size = new System.Drawing.Size(632, 367);
             this.panel1.TabIndex = 3;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
             // 
             // listView1
             // 
-            this.listView1.Location = new System.Drawing.Point(29, 310);
+            this.listView1.Location = new System.Drawing.Point(30, 462);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(540, 181);
+            this.listView1.Size = new System.Drawing.Size(540, 134);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(296, 51);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "label1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(459, 51);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "label2";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(656, 519);
+            this.ClientSize = new System.Drawing.Size(682, 608);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.listBox1);
@@ -93,6 +117,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -103,6 +128,8 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 
