@@ -10,13 +10,13 @@ namespace llk
 {
     public partial class Form1 : Form
     {
-        private int hozCount = 20;
-        private int VerCount = 12;
+        private int hozCount = 18; //总数16*9=144=12*12
+        private int VerCount = 11;
         private int tileWidth = 31;
         private int tileHeight = 34;
         private bool _GameStart = false;
         private MapTitle _selTile = null;
-        private int _imageCount=36;
+        private int _imageCount=12;
 
         private int[,] map1 =
             {
@@ -409,8 +409,8 @@ namespace llk
             pt_temp.Y = pt1.Y + 1;
 
 
-            if (isPointOutBorder(pt_temp))
-                return false;
+            //if (isPointOutBorder(pt_temp))
+            //    return false;
             while (!isPointOutBorder(pt_temp) && MapTiles[pt_temp.X, pt_temp.Y].ImageID == -1)
             {
                 if (CheckOneCorner(pt_temp, pt2))
@@ -418,8 +418,8 @@ namespace llk
 
                 pt_temp.Y += 1;
 
-                if (isPointOutBorder(pt_temp))
-                    return false;
+                //if (isPointOutBorder(pt_temp))
+                //    return false;
             }
 
             return false;
@@ -439,13 +439,24 @@ namespace llk
             return false;
         }
 
+
+        /// <summary>
+        /// 测试自动消除
+        /// </summary>
         private void AutoLink()
         {
             if (CalcSolution() == 2)
+            {
+                DrawPanelImage();
+                _GameStart = false;
+                MessageBox.Show("Greate Job!", "Notice");
                 return;
-
+            }
+            bool needShuff = false;
             for (int i = 1; i < VerCount - 1; i++)
+            {
                 for (int j = 1; j < hozCount - 1; j++)
+                {
                     if (MapTiles[i, j].ImageID != -1)
                     {
                         //tileNum++;
@@ -467,14 +478,29 @@ namespace llk
                                             MapTiles[k, l].ImageID = -1;
                                             if (CalcSolution() == 1)
                                             {
-                                                AgainShuffleGame();
-                                                AutoLink();
+                                                needShuff = true;
+                                                break;
                                             }
                                         }
                                     }
                                 }
                             }
-                    }    
+                    }
+
+                    if (needShuff)
+                        break;
+                }
+
+                if (needShuff)
+                    break;
+            }
+
+            if (needShuff)
+            {
+                AgainShuffleGame();
+                DrawPanelImage();
+                AutoLink();
+            }
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -508,6 +534,7 @@ namespace llk
 
             if (isPointOutBorder(SelPoint))
             {
+                _selTile = null;
                 return;
             }
 
@@ -657,7 +684,7 @@ namespace llk
 
             for (int i = 1; i < VerCount - 1; i++)
                 for (int j = 1; j < hozCount - 1; j++)
-                    if (MapTiles[i, j].ImageID != -1)
+                    //if (MapTiles[i, j].ImageID != -1)
                         a1.Add(MapTiles[i, j].ImageID);
 
 
@@ -669,19 +696,38 @@ namespace llk
             for (int i = 1; i < VerCount - 1; i++)
                 for (int j = 1; j < hozCount - 1; j++)
                 {
-                    if (MapTiles[i, j].ImageID != -1)
-                    {
-                        MapTiles[i, j].ImageID = array_temp[m];
-                        m++;
-                    }
+                    //if (MapTiles[i, j].ImageID != -1)
+                    //{
+                    //    MapTiles[i, j].ImageID = array_temp[m];
+                    //    m++;
+                    //}
+                    MapTiles[i, j] = new MapTitle(i, j, array_temp[(i - 1) * (hozCount - 2) + (j - 1)] , OffsetY + (j - 1) * tileWidth, OffsetX + (i - 1) * tileHeight);
+
                 }
 
+            ShowData();
+            panel1.Invalidate();
             if (CalcSolution() == 1)
+            {
                 AgainShuffleGame();
+            }
             else
                 if (CalcSolution() == 0)
-                    panel1.Invalidate();
+                {
+                    DrawPanelImage();   
+                }
                         
+        }
+
+        private void DrawPanelImage()
+        {
+            Graphics g = Graphics.FromHwnd(panel1.Handle);
+
+            Rectangle rect = panel1.ClientRectangle;
+
+            g.FillRectangle(new SolidBrush(Color.Black), rect);
+
+            DrawImage();
         }
 
         private void CalcHinted(object sender, EventArgs e)
@@ -715,6 +761,11 @@ namespace llk
                                 }
                             }
                     }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ShowData();
         }
     }
 }
